@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<PackageReference Include="MediatR" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Folder Include="Abstract\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\UserIpTracker.Domain\UserIpTracker.Domain.csproj" />
+	</ItemGroup>
+
+</Project>

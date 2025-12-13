@@ -5,25 +5,26 @@ namespace UserIpTracker.Domain;
 public sealed class UserConnection 
     : IEquatable<UserConnection>
 {
-    public IPAddress Ip { get; }
-    public DateTime LastSeen { get; private set; }
+    private DateTime? _lastSeenUtc;
 
+    public IPAddress Ip { get; }
+    public DateTime LastSeenUtc => _lastSeenUtc ?? throw new InvalidOperationException("LastSeen missing");
+
+    private UserConnection(IPAddress ip, DateTime lastSeen)
+    {
+        Ip = ip;
+        _lastSeenUtc = lastSeen;
+    }
 #pragma warning disable CS8618
     private UserConnection() { }
 #pragma warning restore
-
-    private UserConnection(IPAddress ip, DateTime timestamp)
-    {
-        Ip = ip;
-        LastSeen = timestamp;
-    }
 
     public static UserConnection Create(IPAddress ip, DateTime timestamp)
     {
         ArgumentNullException.ThrowIfNull(ip);
 
         if (timestamp == default)
-            throw new ArgumentException("LastSeen cannot be default.", nameof(timestamp));
+            throw new ArgumentException("Timestamp cannot be default.", nameof(timestamp));
 
         if (ip.Equals(IPAddress.None) || ip.Equals(IPAddress.Any))
             throw new ArgumentException("Invalid IP address.", nameof(ip));
@@ -31,10 +32,12 @@ public sealed class UserConnection
         return new UserConnection(ip, timestamp);
     }
 
-    public void Update(DateTime timestamp)
+    public bool TryUpdateLastSeen(DateTime timestamp)
     {
-        if (timestamp > LastSeen)
-            LastSeen = timestamp;
+        if (timestamp < LastSeenUtc) 
+            return false;
+        _lastSeenUtc = timestamp;
+        return true;
     }
 
     #region IEquatable

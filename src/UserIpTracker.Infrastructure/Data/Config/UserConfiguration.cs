@@ -10,6 +10,14 @@ internal sealed class UserConfiguration
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        builder.ToTable("users");
+        builder.HasKey(u => u.Id);
+
+        builder.Property(u => u.Id)
+            .HasConversion(id => id.Key, key => new UserId(key))
+            .ValueGeneratedNever()
+            .HasColumnName("id")
+            .IsRequired();
 
         builder.OwnsMany(u => u.Connections, connBuilder =>
         {
@@ -21,14 +29,30 @@ internal sealed class UserConfiguration
                     ip => ip.ToString(), 
                     ipStr => IPAddress.Parse(ipStr))
                 .HasColumnName("ip")
+                .HasColumnType("text")
                 .IsRequired();
 
-            connBuilder.Property(c => c.LastSeen)
-                .HasColumnName("last_seen")
-                .IsRequired();
+            connBuilder.HasKey("user_id", "Ip");
+            connBuilder.HasIndex(c => c.Ip);
+
+            connBuilder.Property<DateTime?>("_lastSeenUtc")
+              .HasColumnName("last_seen_utc")
+              .IsRequired(false);
         });
 
-        builder.Navigation(u => u.Connections)
-            .UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.OwnsOne(u => u.LastConnection, lastConnBuilder =>
+        {
+            lastConnBuilder.Property(c => c.Ip)
+                .HasConversion(
+                    ip => ip.ToString(),
+                    ipStr => IPAddress.Parse(ipStr))
+                .HasColumnName("last_ip")
+                .HasColumnType("text")
+                .IsRequired();
+
+            lastConnBuilder.Property<DateTime?>("_lastSeenUtc")
+             .HasColumnName("last_seen_utc")
+             .IsRequired(false);
+        });
     }
 }
