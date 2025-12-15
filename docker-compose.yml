@@ -1,0 +1,32 @@
+services:
+    useriptracker.db:
+        container_name: useriptracker.db
+        image: postgres:16
+        restart: always
+        environment:
+          POSTGRES_DB: UserIpTracker
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: aDmIn44*
+        ports:
+          - "5432:5432"
+        volumes:
+          - useriptracker_pgdata:/var/lib/postgresql/data
+        networks:
+          - appnet
+    useriptracker.api:
+        container_name: useriptracker.api
+        image: ${DOCKER_REGISTRY-}useriptrackerapi
+        restart: on-failure
+        build:
+          context: .
+          dockerfile: src/UserIpTracker.Api/Dockerfile
+        depends_on:
+         - useriptracker.db
+        networks:
+          - appnet
+volumes:
+  useriptracker_pgdata:    
+
+networks:
+  appnet:
+    driver: bridge

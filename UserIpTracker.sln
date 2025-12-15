@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserIpTracker.Domain", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserIpTracker.Infrastructure", "src\UserIpTracker.Infrastructure\UserIpTracker.Infrastructure.csproj", "{863BD2C0-312C-420E-B71F-804AFFD489DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserIpTracker.Application", "src\UserIpTracker.Application\UserIpTracker.Application.csproj", "{F5D60F85-0973-4C53-B27D-8AEA896ED51D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserIpTracker.Application", "src\UserIpTracker.Application\UserIpTracker.Application.csproj", "{F5D60F85-0973-4C53-B27D-8AEA896ED51D}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{46BA193F-5F21-44C1-9BAF-580FD385DC55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,10 @@ Global
 		{F5D60F85-0973-4C53-B27D-8AEA896ED51D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5D60F85-0973-4C53-B27D-8AEA896ED51D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5D60F85-0973-4C53-B27D-8AEA896ED51D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46BA193F-5F21-44C1-9BAF-580FD385DC55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46BA193F-5F21-44C1-9BAF-580FD385DC55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46BA193F-5F21-44C1-9BAF-580FD385DC55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46BA193F-5F21-44C1-9BAF-580FD385DC55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

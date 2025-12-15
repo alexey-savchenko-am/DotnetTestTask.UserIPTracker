@@ -1,7 +1,10 @@
-﻿using FormCollector.Infrastructure;
+﻿using Dapper;
+using FormCollector.Infrastructure;
+using FormCollector.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using UserIpTracker.Application.Abstract;
 using UserIpTracker.Domain;
 using UserIpTracker.Infrastructure.Data;
 using UserIpTracker.Infrastructure.Data.Repositories;
@@ -13,6 +16,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.ConfigureOptions<UserDbOptionsSetup>();
+        services.AddSingleton<IDbConnectionFactory, NpgConnectionFactory>();
+        services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
 
         services.AddDbContext<DbContext, UserDbContext>((provider, builder) =>
         {
@@ -30,6 +35,8 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IUserRepository, UserRepository>();
+
+        SqlMapper.AddTypeHandler(new InetToIPAddressHandler());
 
         return services;
     }

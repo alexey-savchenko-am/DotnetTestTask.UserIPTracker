@@ -1,3 +1,5 @@
-﻿namespace UserIpTracker.Application.Connections;
+﻿using System.Net;
 
-public sealed record UserConnectionDto(Guid UserId, string Ip, DateTime LastSeenUtc);
+namespace UserIpTracker.Application.Connections;
+
+public sealed record UserConnectionDto(Guid UserId, string? Ip, DateTime? LastSeenUtc);

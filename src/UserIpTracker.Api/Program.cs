@@ -1,25 +1,45 @@
+using MinimalApi.Endpoint.Extensions;
+using UserIpTracker.Application;
 using UserIpTracker.Infrastructure;
+using UserIpTracker.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
+services
+    .AddApplication()
+    .AddInfrastructure();
+
+services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+services.AddEndpoints();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
-services.AddInfrastructure();
-
 var app = builder.Build();
+
+app.MapEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    using var scope = app.Services.CreateScope();
+    var databaseInitializer = scope.ServiceProvider.GetService<IDatabaseInitializer>();
+    databaseInitializer?.InitializeAsync(recreateDatabase: true).Wait();
 }
 
+app.UseCors();
+
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
 
 app.Run();

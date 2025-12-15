@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SharedKernel.Domain;
+using SharedKernel.Domain.Exceptions;
 using System.Net;
 using UserIpTracker.Domain;
 
 namespace UserIpTracker.Application.Connections.Create;
 
 internal sealed class CreateConnectionCommandHandler
-    : IRequestHandler<CreateConnectionCommand, UserConnectionDto?>
+    : IRequestHandler<CreateConnectionCommand, UserConnectionDto>
 {
     private readonly IUserRepository _userRepository;
     private readonly ILogger<CreateConnectionCommandHandler> _logger;
@@ -20,7 +20,7 @@ internal sealed class CreateConnectionCommandHandler
         _logger = logger;
     }
 
-    public async Task<UserConnectionDto?> Handle(
+    public async Task<UserConnectionDto> Handle(
         CreateConnectionCommand request, 
         CancellationToken cancellationToken)
     {
@@ -34,12 +34,13 @@ internal sealed class CreateConnectionCommandHandler
         {
             if (!IPAddress.TryParse(request.Ip, out var ip))
             {
-                _logger.LogError(
-                    "Invalid IP address received. UserId={UserId}, Ip={Ip}",
+                _logger.LogWarning(
+                    "Invalid IP address format. UserId={UserId}, Ip={Ip}",
                     request.UserId,
                     request.Ip);
 
-                return null;
+                throw new ApplicationValidationException(
+                    $"Invalid IP address: {request.Ip}");
             }
 
             var timestamp = request.TimestampUtc ?? DateTime.UtcNow;

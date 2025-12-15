@@ -7,6 +7,7 @@
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\UserIpTracker.Application\UserIpTracker.Application.csproj" />
 	  <ProjectReference Include="..\UserIpTracker.Domain\UserIpTracker.Domain.csproj" />
 	</ItemGroup>
 	<ItemGroup>

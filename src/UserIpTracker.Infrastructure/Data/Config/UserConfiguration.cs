@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Net;
 using UserIpTracker.Domain;
 
 namespace UserIpTracker.Infrastructure.Data.Config;
@@ -23,17 +22,18 @@ internal sealed class UserConfiguration
         {
             connBuilder.ToTable("user_connections");
             connBuilder.WithOwner().HasForeignKey("user_id");
+            connBuilder.Property<Guid>("id");
+            connBuilder.HasKey("id");
 
             connBuilder.Property(c => c.Ip)
-                .HasConversion(
-                    ip => ip.ToString(), 
-                    ipStr => IPAddress.Parse(ipStr))
-                .HasColumnName("ip")
-                .HasColumnType("text")
-                .IsRequired();
+              .HasColumnName("ip")
+              .HasColumnType("inet")
+              .IsRequired();
 
-            connBuilder.HasKey("user_id", "Ip");
-            connBuilder.HasIndex(c => c.Ip);
+            // Used SP-GiST index on IP-Address
+            connBuilder
+                .HasIndex(c => c.Ip)
+                .HasMethod("spgist");
 
             connBuilder.Property<DateTime?>("_lastSeenUtc")
               .HasColumnName("last_seen_utc")
@@ -43,12 +43,9 @@ internal sealed class UserConfiguration
         builder.OwnsOne(u => u.LastConnection, lastConnBuilder =>
         {
             lastConnBuilder.Property(c => c.Ip)
-                .HasConversion(
-                    ip => ip.ToString(),
-                    ipStr => IPAddress.Parse(ipStr))
-                .HasColumnName("last_ip")
-                .HasColumnType("text")
-                .IsRequired();
+               .HasColumnName("last_ip")
+               .HasColumnType("inet")
+               .IsRequired();
 
             lastConnBuilder.Property<DateTime?>("_lastSeenUtc")
              .HasColumnName("last_seen_utc")

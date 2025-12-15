@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SharedKernel.Domain;
+using SharedKernel.Domain.Exceptions;
 using UserIpTracker.Domain;
 
 namespace UserIpTracker.Infrastructure.Data.Repositories;

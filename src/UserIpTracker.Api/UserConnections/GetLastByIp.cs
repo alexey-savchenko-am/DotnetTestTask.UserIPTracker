@@ -1,0 +1,60 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using MinimalApi.Endpoint;
+using System.Data.Common;
+using UserIpTracker.Application.Connections;
+using UserIpTracker.Application.Connections.GetLast;
+
+namespace UserIpTracker.Api.UserConnections;
+
+public sealed class GetLastByIp
+    : IEndpoint<IResult, GetLastConnectionByIpQuery>
+{
+    private readonly ISender _mediatr;
+
+    public GetLastByIp(ISender mediatr)
+    {
+        _mediatr = mediatr;
+    }
+
+    public void AddRoute(IEndpointRouteBuilder app)
+    {
+        app.MapGet("/api/users/{userId:guid}/connections/by-ip/{ip}",
+            ([FromRoute] Guid userId, [FromRoute] string ip) => 
+                HandleAsync(new GetLastConnectionByIpQuery(userId, ip)))
+            .Produces<UserConnectionDto>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithName("Find the user's last connection for any of their IP addresses")
+            .WithDescription("Find the user's last connection for any of their IP addresses")
+            .WithTags("UserConnectionsEndpoints");
+    }
+
+    public async Task<IResult> HandleAsync(GetLastConnectionByIpQuery request)
+    {
+        try
+        {
+            var result = await _mediatr.Send(request).ConfigureAwait(false);
+
+            if (result is null)
+            {
+                return Results.NotFound();
+            }
+
+            return Results.Ok(result);
+        }
+        catch (DbException ex)
+        {
+            return Results.Problem(
+                title: "Persistence error",
+                detail: ex.Message,
+                statusCode: StatusCodes.Status409Conflict);
+        }
+        catch (OperationCanceledException)
+        {
+            return Results.Conflict(StatusCodes.Status499ClientClosedRequest);
+        }
+    }
+}
