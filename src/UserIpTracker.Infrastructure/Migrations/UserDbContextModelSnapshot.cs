@@ -82,7 +82,7 @@ namespace UserIpTracker.Infrastructure.Migrations
 
                             NpgsqlIndexBuilderExtensions.HasMethod(b1.HasIndex("Ip"), "spgist");
 
-                            b1.HasIndex("user_id");
+                            b1.HasIndex("user_id", "Ip");
 
                             b1.ToTable("user_connections", (string)null);
 

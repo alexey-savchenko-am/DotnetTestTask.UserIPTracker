@@ -13,7 +13,7 @@ using UserIpTracker.Infrastructure.Data;
 namespace UserIpTracker.Infrastructure.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20251215053211_InitialCreate")]
+    [Migration("20251216020725_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -85,7 +85,7 @@ namespace UserIpTracker.Infrastructure.Migrations
 
                             NpgsqlIndexBuilderExtensions.HasMethod(b1.HasIndex("Ip"), "spgist");
 
-                            b1.HasIndex("user_id");
+                            b1.HasIndex("user_id", "Ip");
 
                             b1.ToTable("user_connections", (string)null);
 

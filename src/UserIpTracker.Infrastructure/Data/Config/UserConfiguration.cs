@@ -30,6 +30,8 @@ internal sealed class UserConfiguration
               .HasColumnType("inet")
               .IsRequired();
 
+            connBuilder.HasIndex("user_id", "Ip");
+
             // Used SP-GiST index on IP-Address
             connBuilder
                 .HasIndex(c => c.Ip)

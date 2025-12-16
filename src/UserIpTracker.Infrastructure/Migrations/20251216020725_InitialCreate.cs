@@ -52,9 +52,9 @@ namespace UserIpTracker.Infrastructure.Migrations
                 .Annotation("Npgsql:IndexMethod", "spgist");
 
             migrationBuilder.CreateIndex(
-                name: "IX_user_connections_user_id",
+                name: "IX_user_connections_user_id_ip",
                 table: "user_connections",
-                column: "user_id");
+                columns: new[] { "user_id", "ip" });
         }
 
         /// <inheritdoc />
