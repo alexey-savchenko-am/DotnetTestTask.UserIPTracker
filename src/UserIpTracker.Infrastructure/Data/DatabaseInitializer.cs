@@ -7,11 +7,11 @@ namespace FormCollector.Infrastructure.Data;
 internal sealed class DatabaseInitializer
     : IDatabaseInitializer
 {
-    private readonly DbContext _dbContext;
+    private readonly UserDbContext _dbContext;
     private readonly ILogger<DatabaseInitializer> _logger;
 
     public DatabaseInitializer(
-        DbContext dbContext, 
+        UserDbContext dbContext, 
         ILogger<DatabaseInitializer> logger)
     {
         _dbContext = dbContext;
@@ -19,7 +19,7 @@ internal sealed class DatabaseInitializer
     }
     public async Task InitializeAsync(bool recreateDatabase = false, CancellationToken ct = default)
     {
-        _logger.LogInformation("Applying migrations for {DbContext}...", typeof(DbContext).Name);
+        _logger.LogInformation("Applying migrations for {DbContext}...", typeof(UserDbContext).Name);
 
         try
         {
@@ -29,11 +29,11 @@ internal sealed class DatabaseInitializer
             }
             await _dbContext.Database.MigrateAsync(ct).ConfigureAwait(false);
 
-            _logger.LogInformation("✅ Migrations applied successfully for {DbContext}.", typeof(DbContext).Name);
+            _logger.LogInformation("✅ Migrations applied successfully for {DbContext}.", typeof(UserDbContext).Name);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "❌ Migration failed for {DbContext}.", typeof(DbContext).Name);
+            _logger.LogError(ex, "❌ Migration failed for {DbContext}.", typeof(UserDbContext).Name);
             throw;
         }
     }

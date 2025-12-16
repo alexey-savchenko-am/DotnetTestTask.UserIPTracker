@@ -19,19 +19,22 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IDbConnectionFactory, NpgConnectionFactory>();
         services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
 
-        services.AddDbContext<DbContext, UserDbContext>((provider, builder) =>
+        services.AddDbContextFactory<UserDbContext>((provider, options) =>
         {
-            var options = provider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-            builder.UseNpgsql(options.ConnectionString, actions =>
+            var dbOptions = provider
+                .GetRequiredService<IOptions<DatabaseOptions>>()
+                .Value;
+
+            options.UseNpgsql(dbOptions.ConnectionString, npgsql =>
             {
-                if (options.MaxRetryCount is not null && options.MaxRetryCount > 0)
-                {
-                    actions.EnableRetryOnFailure();
-                }
-                actions.CommandTimeout(options.CommandTimeout);
+                if (dbOptions.MaxRetryCount is > 0)
+                    npgsql.EnableRetryOnFailure();
+
+                npgsql.CommandTimeout(dbOptions.CommandTimeout);
             });
-            builder.EnableDetailedErrors(options.EnableDetailedErrors);
-            builder.EnableSensitiveDataLogging(options.EnableSensitiveDataLogging);
+
+            options.EnableDetailedErrors(dbOptions.EnableDetailedErrors);
+            options.EnableSensitiveDataLogging(dbOptions.EnableSensitiveDataLogging);
         });
 
         services.AddScoped<IUserRepository, UserRepository>();

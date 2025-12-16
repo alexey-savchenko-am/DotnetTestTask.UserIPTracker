@@ -20,8 +20,21 @@ services:
         build:
           context: .
           dockerfile: src/UserIpTracker.Api/Dockerfile
+        environment:
+            ASPNETCORE_URLS: http://+:8080
         depends_on:
          - useriptracker.db
+        networks:
+          - appnet
+    useriptracker.loadtest:
+        container_name: useriptracker.loadtest
+        restart: on-failure
+        build:
+            context: .
+            dockerfile: load-tests/Dockerfile
+        depends_on:
+            useriptracker.api:
+                condition: service_started
         networks:
           - appnet
 volumes:

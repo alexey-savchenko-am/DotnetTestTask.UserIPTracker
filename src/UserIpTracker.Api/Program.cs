@@ -33,9 +33,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    using var scope = app.Services.CreateScope();
+    var scope = app.Services.CreateScope();
     var databaseInitializer = scope.ServiceProvider.GetService<IDatabaseInitializer>();
     databaseInitializer?.InitializeAsync(recreateDatabase: true).Wait();
+    scope.Dispose();
 }
 
 app.UseCors();
