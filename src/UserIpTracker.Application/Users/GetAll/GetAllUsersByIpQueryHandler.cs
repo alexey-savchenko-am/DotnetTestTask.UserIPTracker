@@ -8,7 +8,7 @@ using System.Data.Common;
 namespace UserIpTracker.Application.Users.GetAll;
 
 internal sealed class GetAllUsersByIpQueryHandler
-    : IRequestHandler<GetAllUsersByIpQuery, List<UserDto>>
+    : IRequestHandler<GetAllUsersByIpQuery, List<UserConnectionDto>>
 {
     private readonly IDbConnectionFactory _connectionFactory;
     private readonly IIpNetworkBuilder _ipNetworkBuilder;
@@ -24,7 +24,7 @@ internal sealed class GetAllUsersByIpQueryHandler
         _logger = logger;
     }
 
-    public async Task<List<UserDto>> Handle(
+    public async Task<List<UserConnectionDto>> Handle(
         GetAllUsersByIpQuery request,
         CancellationToken cancellationToken)
     {
@@ -50,7 +50,8 @@ internal sealed class GetAllUsersByIpQueryHandler
             var query = """
                 SELECT DISTINCT
                     u.id AS UserId,
-                    u.last_seen_utc AS LastSeenUtc
+                    c.ip AS Ip
+                    c.last_seen_utc AS LastSeenUtc
                 FROM user_connections c
                     JOIN users u ON c.user_id = u.id
                 WHERE c.ip <<= @Network::inet
@@ -62,7 +63,7 @@ internal sealed class GetAllUsersByIpQueryHandler
                 cancellationToken: cancellationToken);
 
             var result = (await connection
-                .QueryAsync<UserDto>(command)
+                .QueryAsync<UserConnectionDto>(command)
                 .ConfigureAwait(false))
                 .ToList();
 

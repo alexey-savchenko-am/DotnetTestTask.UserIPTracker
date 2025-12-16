@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using MinimalApi.Endpoint;
 using SharedKernel.Domain.Exceptions;
-using UserIpTracker.Application.Connections;
+using UserIpTracker.Application;
 using UserIpTracker.Application.Connections.Create;
 
 namespace UserIpTracker.Api.UserConnections;

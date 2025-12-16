@@ -10,8 +10,8 @@ import aiohttp
 from aiohttp import ClientSession
 from asyncio import Semaphore
 
-TOTAL_REQUESTS = 1000
-CONCURRENCY = 200
+TOTAL_REQUESTS = 100
+CONCURRENCY = 20
 API_URL = "http://useriptracker.api:8080/api/users/connections"
 
 JsonDict = dict[str, Any]

@@ -4,9 +4,8 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using UserIpTracker.Application.Abstract;
 using UserIpTracker.Application.Connections.GetAll;
-using UserIpTracker.Application.Connections;
-using SharedKernel.Domain;
 using System.Data.Common;
+using UserIpTracker.Application;
 
 internal sealed class GetAllConnectionQueryHandler
     : IRequestHandler<GetAllConnectionsQuery, List<UserConnectionDto>>

@@ -3,10 +3,9 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using UserIpTracker.Application.Abstract;
-using UserIpTracker.Application.Connections;
 using System.Data.Common;
-
 using UserIpTracker.Application.Connections.GetLast;
+using UserIpTracker.Application;
 
 internal sealed class GetLastConnectionQueryHandler
     : IRequestHandler<GetLastConnectionQuery, UserConnectionDto?>

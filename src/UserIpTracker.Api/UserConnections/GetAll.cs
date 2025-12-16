@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MinimalApi.Endpoint;
 using System.Data.Common;
-using UserIpTracker.Application.Connections;
+using UserIpTracker.Application;
 using UserIpTracker.Application.Connections.GetAll;
 
 namespace UserIpTracker.Api.UserConnections;
