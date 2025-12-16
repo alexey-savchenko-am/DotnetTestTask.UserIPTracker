@@ -50,7 +50,7 @@ internal sealed class GetAllUsersByIpQueryHandler
             var query = """
                 SELECT DISTINCT
                     u.id AS UserId,
-                    c.ip AS Ip
+                    c.ip::text AS Ip,
                     c.last_seen_utc AS LastSeenUtc
                 FROM user_connections c
                     JOIN users u ON c.user_id = u.id
